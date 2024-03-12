@@ -1,0 +1,3923 @@
+{
+	"info": {
+		"_postman_id": "f0d4c3ad-7c21-420a-9c0c-7777c36f0d2c",
+		"name": "Team27_APIScorers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33435250",
+		"_collection_link": "https://red-moon-614085.postman.co/workspace/Team-Workspace~c40ebddb-2607-4ffe-8597-ed2cf659b8b2/collection/33435250-f0d4c3ad-7c21-420a-9c0c-7777c36f0d2c?action=share&source=collection_link&creator=33435250"
+	},
+	"item": [
+		{
+			"name": "POSITIVE SCENARIOS",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"console.log(response);\r",
+									"pm.globals.set(\"token\", response.token);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"Numpyninja@1\",\r\n  \"userLoginEmailId\": \"sdetorganizers@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/login",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dynamic ProgramID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"console.log(response);\r",
+									"pm.globals.set(\"programId\",response.programId);\r",
+									"pm.globals.set(\"programName\",response.programName);\r",
+									"pm.globals.set(\"programpayload\",JSON.stringify(response));\r",
+									"pm.globals.set(\"programStatus\", response.programStatus);\r",
+									"pm.globals.set(\"programDescription\", response.programDescription);\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"check response body\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.programId).to.be.greaterThan(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code name has string\", () => {\r",
+									"  pm.response.to.have.status(\"Created\");\r",
+									"});\r",
+									"var jsonData = pm.response.json();\r",
+									"var schema = {\r",
+									" \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"programId\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"programName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"programDescription\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"programStatus\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"creationTime\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"lastModTime\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"programId\",\r",
+									"    \"programName\",\r",
+									"    \"programDescription\",\r",
+									"    \"programStatus\",\r",
+									"    \"creationTime\",\r",
+									"    \"lastModTime\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.test(\"JSON Schema Validation\",()=>{\r",
+									"    pm.expect(tv4.validate(jsonData,schema)).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var pname = \"March24-APIScorers-SDET-\" + pm.variables.replaceIn('{{$randomInt}}');\r",
+									"\r",
+									"var programDescriptionArray = [\"SDET\", \"DA\", \"Developers\",\"SMPO\"];\r",
+									"var pdes = programDescriptionArray[Math.floor(Math.random() * programDescriptionArray.length)];\r",
+									"//var p_Status = [\"Active\", \"InActive\"];\r",
+									"//var pstatus = p_Status[Math.floor(Math.random() * p_Status.length)];\r",
+									"var pstatus =\"Active\";\r",
+									"pm.environment.set(\"DynamicName\", pname);\r",
+									"\r",
+									"pm.environment.set(\"DynamicDescription\",pdes);\r",
+									"\r",
+									"pm.environment.set(\"Dynamicstatus\",pstatus);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"programDescription\": \"{{DynamicDescription}}\",\r\n  \"programName\": \"{{DynamicName}}\",\r\n  \"programStatus\": \"{{Dynamicstatus}}\"\r\n  \r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/saveprogram",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"saveprogram"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DataDriven program_name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"console.log(response);\r",
+									"\r",
+									"pm.globals.set(\"program_Name\",response.programName);\r",
+									"pm.globals.set(\"programNamePayload\",JSON.stringify(response));\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"check response body\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.programId).to.be.greaterThan(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"checking data type\", function()\r",
+									"{\r",
+									"    pm.expect(response).to.be.an('object')\r",
+									"    pm.expect(response.programName).to.be.an('string')\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"programDescription\": \"{{programDescription}}\",\r\n  \"programName\": \"{{programName}}{{$randomInt}}\",\r\n  \"programStatus\": \"{{programstatus}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/{{PgmendPoint}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"{{PgmendPoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dynamic batch SDET",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json()\r",
+									"pm.globals.set(\"createdBatchId\",response.batchId)\r",
+									"console.log(response.batchId)\r",
+									"\r",
+									"pm.globals.set(\"createdBatchName\",response.batchName)\r",
+									"\r",
+									"\r",
+									"pm.test(\"New Batch Creation Test\", function () {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var bname = \"March24-APIScores-SDET-SDET\" + pm.variables.replaceIn('{{$randomInt}}')\r",
+									"var bdesc = \"This batch has list of names who joined in Feb 2024\"\r",
+									"//var batchName_Status = [\"Active\", \"InActive\"];\r",
+									"//var bstatus = batchName_Status[Math.floor(Math.random() * batchName_Status.length)];\r",
+									"var bstatus=\"Active\";\r",
+									"\r",
+									"pm.environment.set(\"batchDescription\", bdesc)\r",
+									"pm.environment.set(\"batchName\",bname)\r",
+									"pm.environment.set(\"batchNoOfClasses\",Math.floor(Math.random() * 20) + 1)\r",
+									"pm.environment.set(\"batchStatus\",bstatus)\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"batchDescription\": \"{{batchDescription}}\",\r\n  \"batchName\": \"{{batchName}}\",\r\n  \"batchNoOfClasses\": \"{{batchNoOfClasses}}\",\r\n  \"batchStatus\": \"{{batchStatus}}\",\r\n  \"programId\": {{programId}}\r\n }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/batches",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dynamic batch DA",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"var response = pm.response.json()\r",
+									"pm.globals.set(\"createdBatchId\",response.batchId)\r",
+									"console.log(response.batchId)\r",
+									"\r",
+									"pm.globals.set(\"createdBatchName\",response.batchName)\r",
+									"\r",
+									"\r",
+									"pm.test(\"New Batch Creation Test\", function () {\r",
+									"  pm.expect(pm.response.code).to.eql(201);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var bname = \"March24-APIScores-DA-DA\" + pm.variables.replaceIn('{{$randomInt}}');\r",
+									"var bdesc = \"This batch has list of names who joined in March 2024\"\r",
+									"var batchName_Status = [\"Active\", \"InActive\"];\r",
+									"var bstatus = batchName_Status[Math.floor(Math.random() * 2)];\r",
+									"\r",
+									"\r",
+									"pm.environment.set(\"batchDescription\", bdesc)\r",
+									"pm.environment.set(\"batchName\",bname)\r",
+									"pm.environment.set(\"batchNoOfClasses\",Math.floor(Math.random() * 20) + 1)\r",
+									"pm.environment.set(\"batchStatus\",bstatus)\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"batchDescription\": \"{{batchDescription}}\",\r\n  \"batchName\": \"{{batchName}}\",\r\n  \"batchNoOfClasses\": \"{{batchNoOfClasses}}\",\r\n  \"batchStatus\": \"{{batchStatus}}\",\r\n  \"programId\": \"{{programId}}\"\r\n }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/batches",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User Login with valid data",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"for (let i = 0; i < 10; i++) {\r",
+									"    let randomMobile = Math.random().toString().slice(2,12);\r",
+									"    pm.variables.set(\"userPhoneNumber\", randomMobile);\r",
+									"}\r",
+									"\r",
+									"var u_middleName = \"ApiScorers\";\r",
+									"pm.environment.set(\"userMiddleName\", u_middleName);\r",
+									"\r",
+									"const email = \"{{$randomEmail}}\";\r",
+									"pm.variables.set(\"userLoginEmail\", email);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"var userController = pm.response.json();",
+									"pm.globals.set(\"user_Id\", userController.userId);",
+									"pm.globals.set(\"userControllerPostRes\",JSON.stringify(userController));",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userComments\": \"{{userComments}}\",\r\n    \"userEduPg\": \"{{userEduPg}}\",\r\n    \"userEduUg\": \"{{userEduUg}}\",\r\n    \"userFirstName\": \"{{userFirstName}}\",\r\n    \"userLastName\": \"{{userLastName}}\",\r\n    \"userLinkedinUrl\": \"{{userLinkedinUrl}}\",\r\n    \"userLocation\": \"{{userLocation}}\",\r\n    \"userLogin\": {\r\n        \"loginStatus\": \"{{loginStatus}}\",\r\n        \"password\": \"{{password}}\",\r\n        \"roleIds\": [\r\n            \"{{roleIds}}\"\r\n        ],\r\n        \"status\": \"{{status}}\",\r\n        \"userLoginEmail\": \"{{userLoginEmail}}\"\r\n    },\r\n    \"userMiddleName\": \"{{userMiddleName}}\",\r\n    \"userPhoneNumber\": {{userPhoneNumber}},\r\n    \"userRoleMaps\": [\r\n        {\r\n            \"roleId\": \"{{roleId}}\",\r\n            \"userRoleStatus\": \"{{userRoleStatus}}\"\r\n        }\r\n    ],\r\n    \"userTimeZone\": \"{{userTimeZone}}\",\r\n    \"userVisaStatus\": \"{{userVisaStatus}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/roleStatus",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roleStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all programs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/allPrograms",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"allPrograms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all programs with users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/allProgramsWithUsers",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"allProgramsWithUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "program by programID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/programs/{{programId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"programs",
+								"{{programId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all batches",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Retrieved all the batches successfully\", function () {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/batches",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get batch by batchID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User gets the selected batchID\", function () {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/batches/batchId/{{createdBatchId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches",
+								"batchId",
+								"{{createdBatchId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get batch by batchName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User gets the selected batchName\", function () {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/batches/batchName/{{createdBatchName}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches",
+								"batchName",
+								"{{createdBatchName}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get batch by ProgramID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User gets the batch details by selecting by programID\", function () {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/batches/program/{{programId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches",
+								"program",
+								"{{programId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All roles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/roles",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Information by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/{{user_Id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"{{user_Id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Active User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/activeUsers",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"activeUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/byStatus",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"byStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by Batch ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/programBatch/{{createdBatchId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"programBatch",
+								"{{createdBatchId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user for Program ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/programs/{{programId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"programs",
+								"{{programId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Users With Roles",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/roles",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by RoleID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/roles/{{roleId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roles",
+								"{{roleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Users with Filters",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/v2/users",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"v2",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Assigned Program/Batch(es) of All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/userRoleProgramBatchMap",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"userRoleProgramBatchMap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Assigned Program/Batch of a User By User Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/userRoleProgramBatchMap/{{user_Id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"userRoleProgramBatchMap",
+								"{{user_Id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update with new program name",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var putpayload=JSON.parse(pm.globals.get(\"programNamePayload\"));\r",
+									"var programDescriptionArray = [\"SDET\", \"DA\", \"Developers\",\"SMPO\"];\r",
+									"var pdes = programDescriptionArray[Math.floor(Math.random() * programDescriptionArray.length)];\r",
+									"//var pdes = \"Postman Hackathon \" + pm.variables.replaceIn('{{$randomInt}}');\r",
+									"var pname = \"March24-APIScorersSDET-\" + pm.variables.replaceIn('{{$randomInt}}');\r",
+									"putpayload.programDescription=pdes;\r",
+									"putpayload.programName=pname;\r",
+									"pm.globals.set(\"programNamePayload\",JSON.stringify(putpayload));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"console.log(response);\r",
+									"\r",
+									"pm.globals.set(\"program_Name\",response.programName);\r",
+									"\r",
+									"\r",
+									"pm.test(\"check response body\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.programId).to.be.greaterThan(0);\r",
+									"});\r",
+									"var response = pm.response.json();\r",
+									"console.log(response)\r",
+									"pm.test(\"checking data type\", function()\r",
+									"{\r",
+									"    pm.expect(response).to.be.an('object')\r",
+									"    pm.expect(response.programName).to.be.an('string')\r",
+									"\r",
+									"})\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{programNamePayload}}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/program/{{program_Name}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"program",
+								"{{program_Name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update program in programID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"check response body\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.programId).to.be.greaterThan(0);\r",
+									"});\r",
+									"var response = pm.response.json();\r",
+									"console.log(response)\r",
+									"pm.test(\"checking data type\", function()\r",
+									"{\r",
+									"    pm.expect(response).to.be.an('object')\r",
+									"    pm.expect(response.programName).to.be.an('string')\r",
+									"\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var putpayload=JSON.parse(pm.globals.get(\"programpayload\"));\r",
+									"\r",
+									"var p_Status = [\"Active\", \"InActive\"];\r",
+									"var pstatus = p_Status[Math.floor(Math.random() * p_Status.length)];\r",
+									"\r",
+									"var pdes = \"Postman Hackathon\" + pm.variables.replaceIn('{{$randomInt}}');\r",
+									"var pname = \"March24-APIScorers-SDET-\" + pm.variables.replaceIn('{{$randomInt}}');\r",
+									"putpayload.programStatus=pstatus;\r",
+									"putpayload.programDescription=pdes;\r",
+									"putpayload.programName=pname;\r",
+									"pm.globals.set(\"programpayload\",JSON.stringify(putpayload));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{programpayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/putprogram/{{programId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"putprogram",
+								"{{programId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update by BatchID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var bname = \"March24-APIScores-SDET-SDET\" + pm.variables.replaceIn('{{$randomInt}}');\r",
+									"var bdesc = \"SDET Batch \"+ pm.variables.replaceIn('{{$randomInt}}');\r",
+									"var batchName_Status = [\"Active\", \"InActive\"];\r",
+									"var bstatus = batchName_Status[Math.floor(Math.random() * 2)];\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.environment.set(\"batchDescription\", bdesc)\r",
+									"pm.environment.set(\"batchName\",bname)\r",
+									"pm.environment.set(\"batchNoOfClasses\",Math.floor(Math.random() * 20) + 1)\r",
+									"pm.environment.set(\"batchStatus\",bstatus)\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"batchDescription update test by batchID\", function () {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"batchDescription\": \"{{batchDescription}}\",\r\n  \"batchId\": \"{{createdBatchId}}\",\r\n  \"batchName\": \"{{batchName}}\",\r\n  \"batchNoOfClasses\": \"{{batchNoOfClasses}}\",\r\n  \"batchStatus\": \"{{batchStatus}}\",\r\n  \"programId\": \"{{programId}}\"\r\n }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/batches/{{createdBatchId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches",
+								"{{createdBatchId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var putPayload=JSON.parse(pm.globals.get(\"userControllerPostRes\"));\r",
+									"\r",
+									"var lct = \"france\";\r",
+									"putPayload.userLocation=lct;\r",
+									"pm.globals.set(\"putReqBody\",JSON.stringify(putPayload));\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{userControllerPostRes}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/{{user_Id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"{{user_Id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Role Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userRoleList\": [\r\n        \"R03\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/roleId/{{user_Id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roleId",
+								"{{user_Id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "program by programID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code name has string\", function () {\r",
+									"    pm.response.to.have.status(\"OK\");\r",
+									"    });\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/deletebyprogid/{{programId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"deletebyprogid",
+								"{{programId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "program by program name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/deletebyprogname/{{program_Name}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"deletebyprogname",
+								"{{program_Name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the BatchID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Deleting the batchID successfully\", function () {\r",
+									"  pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/batches/{{createdBatchId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches",
+								"{{createdBatchId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/{{user_Id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"{{user_Id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete All Programs/Batches assigned to the User By UserId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/userRoleProgramBatchMap/deleteAll/{{user_Id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"userRoleProgramBatchMap",
+								"deleteAll",
+								"{{user_Id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://lms-marchapi-hackathon-a258d2bbd43b.herokuapp.com/lms/logoutlms",
+							"protocol": "https",
+							"host": [
+								"lms-marchapi-hackathon-a258d2bbd43b",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"lms",
+								"logoutlms"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "NEGATIVE SCENARIOS",
+			"item": [
+				{
+					"name": "Create user with Invalid payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"{{invalidPSWD}}\",\r\n  \"userLoginEmailId\": \"{{invalidEMAIL}}\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/{{loginendpoint}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"{{loginendpoint}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invalid payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"programDescription\": \"null\",\r\n  \"programName\": \"null\",\r\n  \"programStatus\": \"null\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/saveprogram",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"saveprogram"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new batch -Negative",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Batch creation unsuccessful\", function () {\r",
+									"  pm.expect(pm.response.json().success).to.eql(false);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var bname = \"March24-APIScores-SDET-SDET\" + pm.variables.replaceIn('{{$randomInt}}');\r",
+									"var bdesc = \"This batch has list of names who joined in Feb 2024\"\r",
+									"var batchName_Status = [\"Actived\", \"InActived\"];\r",
+									"var bstatus = batchName_Status[Math.floor(Math.random() * 2)];\r",
+									"\r",
+									"\r",
+									"pm.environment.set(\"batchDescription\", bdesc)\r",
+									"pm.environment.set(\"batchName\",bname)\r",
+									"pm.environment.set(\"batchNoOfClasses\",Math.floor(Math.random() * 20) + 1)\r",
+									"pm.environment.set(\"batchStatus\",bstatus)\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"batchDescription\": \"{{batchDescription}}\",\r\n  \"batchName\": \"{{batchName}}\",\r\n  \"batchNoOfClasses\": \"{{batchNoOfClasses}}\",\r\n  \"batchStatus\": \"{{batchStatus}}\",\r\n  \"programId\": \"{{programId}}\"\r\n }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/batches",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User Login with same phone number",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// with invalid phone number\r",
+									"var randomMobile = \"123467890\";\r",
+									"pm.variables.set(\"userPhoneNumber\", randomMobile);\r",
+									"\r",
+									"var u_comments = pm.variables.replaceIn('{{$randomLoremWords}}');\r",
+									"pm.environment.set(\"userComments\", u_comments);\r",
+									"\r",
+									"var u_EduPg = [\"MBA\",\"ME\",\"MCA\"];\r",
+									"var userEduPg = u_EduPg[Math.floor(Math.random() * u_EduPg.length)];\r",
+									"pm.environment.set(\"userEduPg\", userEduPg);\r",
+									"\r",
+									"var u_EduUg = [\"BA\",\"BE\",\"BCA\"];\r",
+									"var userEduUg = u_EduUg[Math.floor(Math.random() * u_EduUg.length)];\r",
+									"pm.environment.set(\"userEduUg\", userEduUg);\r",
+									"\r",
+									"var u_FirstName = pm.variables.replaceIn('{{$randomFirstName}}');\r",
+									"pm.environment.set(\"userFirstName\", u_FirstName);\r",
+									"\r",
+									"var u_LastName = pm.variables.replaceIn('{{$randomLastName}}');\r",
+									"pm.environment.set(\"userLastName\", u_LastName);\r",
+									"\r",
+									"var u_LinkedinUrl = \"https://www.linkedin.com/\" + u_FirstName;\r",
+									"pm.environment.set(\"userLinkedinUrl\", u_LinkedinUrl);\r",
+									"\r",
+									"var u_userLocation = pm.variables.replaceIn('{{$randomCity}}');\r",
+									"pm.environment.set(\"userLocation\", u_userLocation);\r",
+									"\r",
+									"var u_loginStatus = [\"Active\", \"InActive\"];\r",
+									"var userLoginStatus = u_loginStatus[Math.floor(Math.random() * u_loginStatus.length)];\r",
+									"pm.environment.set(\"loginStatus\", userLoginStatus);\r",
+									"\r",
+									"var u_password = pm.variables.replaceIn('{{$$randomPassword}}');\r",
+									"pm.environment.set(\"password\", u_password);\r",
+									"\r",
+									"var u_roleIds = [\"R01\", \"R02\",\"R03\"];\r",
+									"var UserRoleIds = u_roleIds[Math.floor(Math.random() * u_roleIds.length)];\r",
+									"pm.environment.set(\"roleIds\", UserRoleIds);\r",
+									"\r",
+									"pm.environment.set(\"status\", userLoginStatus);\r",
+									"\r",
+									"const email = \"{{$randomEmail}}\";\r",
+									"pm.variables.set(\"userLoginEmail\", email);\r",
+									"\r",
+									"var u_middleName = \"katyPerry\";\r",
+									"pm.environment.set(\"userMiddleName\", u_middleName);\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.environment.set(\"roleId\", UserRoleIds);\r",
+									"\r",
+									"pm.environment.set(\"userRoleStatus\", userLoginStatus);\r",
+									"\r",
+									"var u_TimeZone = [\"PST\", \"MST\", \"CST\", \"EST\", \"IST\"];\r",
+									"var timeZone = u_TimeZone[Math.floor(Math.random() * u_TimeZone.length)];\r",
+									"pm.environment.set(\"userTimeZone\", timeZone);\r",
+									"\r",
+									"const u_userVisaStatus = [\"Not-Specified\", \"NA\", \"GC-EAD\", \"H4-EAD\", \"H4\",\"H1B\", \"Canada-EAD\", \"Indian-Citizen\", \"US-Citizen\", \"Canada-Citizen\"];\r",
+									"var visaStatus = u_userVisaStatus[Math.floor(Math.random() * u_userVisaStatus.length)];\r",
+									"pm.environment.set(\"userVisaStatus\", visaStatus);\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Test data type of the response\", () => {\r",
+									"   pm.expect(jsonData.success).to.be.false;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userComments\": \"{{userComments}}\",\r\n    \"userEduPg\": \"{{userEduPg}}\",\r\n    \"userEduUg\": \"{{userEduUg}}\",\r\n    \"userFirstName\": \"{{userFirstName}}\",\r\n    \"userLastName\": \"{{userLastName}}\",\r\n    \"userLinkedinUrl\": \"{{userLinkedinUrl}}\",\r\n    \"userLocation\": \"{{userLocation}}\",\r\n    \"userLogin\": {\r\n        \"loginStatus\": \"{{loginStatus}}\",\r\n        \"password\": \"{{password}}\",\r\n        \"roleIds\": [\r\n            \"{{roleIds}}\"\r\n        ],\r\n        \"status\": \"{{status}}\",\r\n        \"userLoginEmail\": \"{{userLoginEmail}}\"\r\n    },\r\n    \"userMiddleName\": \"apple\",\r\n    \"userPhoneNumber\": {{userPhoneNumber}},\r\n    \"userRoleMaps\": [\r\n        {\r\n            \"roleId\": \"{{roleId}}\",\r\n            \"userRoleStatus\": \"{{userRoleStatus}}\"\r\n        }\r\n    ],\r\n    \"userTimeZone\": \"{{userTimeZone}}\",\r\n    \"userVisaStatus\": \"{{userVisaStatus}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/roleStatus",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roleStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User Login with invalid linkedIn URL",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// with invalid linkedin Url\r",
+									"var u_LinkedinUrl = \"https://www.gmail.com/\" + u_FirstName;\r",
+									"pm.environment.set(\"userLinkedinUrl\", u_LinkedinUrl);\r",
+									"\r",
+									"var u_comments = pm.variables.replaceIn('{{$randomLoremWords}}');\r",
+									"pm.environment.set(\"userComments\", u_comments);\r",
+									"\r",
+									"var u_EduPg = [\"MBA\",\"ME\",\"MCA\"];\r",
+									"var userEduPg = u_EduPg[Math.floor(Math.random() * u_EduPg.length)];\r",
+									"pm.environment.set(\"userEduPg\", userEduPg);\r",
+									"\r",
+									"var u_EduUg = [\"BA\",\"BE\",\"BCA\"];\r",
+									"var userEduUg = u_EduUg[Math.floor(Math.random() * u_EduUg.length)];\r",
+									"pm.environment.set(\"userEduUg\", userEduUg);\r",
+									"\r",
+									"var u_FirstName = pm.variables.replaceIn('{{$randomFirstName}}');\r",
+									"pm.environment.set(\"userFirstName\", u_FirstName);\r",
+									"\r",
+									"var u_LastName = pm.variables.replaceIn('{{$randomLastName}}');\r",
+									"pm.environment.set(\"userLastName\", u_LastName);\r",
+									"\r",
+									"var u_userLocation = pm.variables.replaceIn('{{$randomCity}}');\r",
+									"pm.environment.set(\"userLocation\", u_userLocation);\r",
+									"\r",
+									"var u_loginStatus = [\"Active\", \"InActive\"];\r",
+									"var userLoginStatus = u_loginStatus[Math.floor(Math.random() * u_loginStatus.length)];\r",
+									"pm.environment.set(\"loginStatus\", userLoginStatus);\r",
+									"\r",
+									"var u_password = pm.variables.replaceIn('{{$$randomPassword}}');\r",
+									"pm.environment.set(\"password\", u_password);\r",
+									"\r",
+									"var u_roleIds = [\"R01\", \"R02\",\"R03\"];\r",
+									"var UserRoleIds = u_roleIds[Math.floor(Math.random() * u_roleIds.length)];\r",
+									"pm.environment.set(\"roleIds\", UserRoleIds);\r",
+									"\r",
+									"pm.environment.set(\"status\", userLoginStatus);\r",
+									"\r",
+									"const email = \"{{$randomEmail}}\";\r",
+									"pm.variables.set(\"userLoginEmail\", email);\r",
+									"\r",
+									"var u_middleName = \"apple\";\r",
+									"pm.environment.set(\"userMiddleName\", u_middleName);\r",
+									"\r",
+									"for (let i = 0; i < 10; i++) {\r",
+									"    let randomMobile = Math.random().toString().slice(2,12);\r",
+									"    pm.variables.set(\"userPhoneNumber\", randomMobile);\r",
+									"}\r",
+									"\r",
+									"pm.environment.set(\"roleId\", UserRoleIds);\r",
+									"\r",
+									"pm.environment.set(\"userRoleStatus\", userLoginStatus);\r",
+									"\r",
+									"var u_TimeZone = [\"PST\", \"MST\", \"CST\", \"EST\", \"IST\"];\r",
+									"var timeZone = u_TimeZone[Math.floor(Math.random() * u_TimeZone.length)];\r",
+									"pm.environment.set(\"userTimeZone\", timeZone);\r",
+									"\r",
+									"const u_userVisaStatus = [\"Not-Specified\", \"NA\", \"GC-EAD\", \"H4-EAD\", \"H4\",\"H1B\", \"Canada-EAD\", \"Indian-Citizen\", \"US-Citizen\", \"Canada-Citizen\"];\r",
+									"var visaStatus = u_userVisaStatus[Math.floor(Math.random() * u_userVisaStatus.length)];\r",
+									"pm.environment.set(\"userVisaStatus\", visaStatus);\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"Test data type of the response\", () => {\r",
+									"   pm.expect(jsonData.success).to.be.false;\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userComments\": \"{{userComments}}\",\r\n    \"userEduPg\": \"{{userEduPg}}\",\r\n    \"userEduUg\": \"{{userEduUg}}\",\r\n    \"userFirstName\": \"{{userFirstName}}\",\r\n    \"userLastName\": \"{{userLastName}}\",\r\n    \"userLinkedinUrl\": \"{{userLinkedinUrl}}\",\r\n    \"userLocation\": \"{{userLocation}}\",\r\n    \"userLogin\": {\r\n        \"loginStatus\": \"{{loginStatus}}\",\r\n        \"password\": \"{{password}}\",\r\n        \"roleIds\": [\r\n            \"{{roleIds}}\"\r\n        ],\r\n        \"status\": \"{{status}}\",\r\n        \"userLoginEmail\": \"{{userLoginEmail}}\"\r\n    },\r\n    \"userMiddleName\": \"apple\",\r\n    \"userPhoneNumber\": {{userPhoneNumber}},\r\n    \"userRoleMaps\": [\r\n        {\r\n            \"roleId\": \"{{roleId}}\",\r\n            \"userRoleStatus\": \"{{userRoleStatus}}\"\r\n        }\r\n    ],\r\n    \"userTimeZone\": \"{{userTimeZone}}\",\r\n    \"userVisaStatus\": \"{{userVisaStatus}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/roleStatus",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roleStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User Login : invalid naming as per Api contract document",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var u_comments = pm.variables.replaceIn('{{$randomLoremWords}}');\r",
+									"pm.environment.set(\"userComments\", u_comments);\r",
+									"\r",
+									"var u_EduPg = [\"MBA\",\"ME\",\"MCA\"];\r",
+									"var userEduPg = u_EduPg[Math.floor(Math.random() * u_EduPg.length)];\r",
+									"pm.environment.set(\"userEduPg\", userEduPg);\r",
+									"\r",
+									"var u_EduUg = [\"BA\",\"BE\",\"BCA\"];\r",
+									"var userEduUg = u_EduUg[Math.floor(Math.random() * u_EduUg.length)];\r",
+									"pm.environment.set(\"userEduUg\", userEduUg);\r",
+									"\r",
+									"var u_FirstName = \"ApiScorers_002\";\r",
+									"\r",
+									"var u_LastName = pm.variables.replaceIn('{{$randomLastName}}');\r",
+									"pm.environment.set(\"userLastName\", u_LastName);\r",
+									"\r",
+									"var u_LinkedinUrl = \"https://www.linkedin.com/\" + u_FirstName;\r",
+									"pm.environment.set(\"userLinkedinUrl\", u_LinkedinUrl);\r",
+									"\r",
+									"var u_userLocation = pm.variables.replaceIn('{{$randomCity}}');\r",
+									"pm.environment.set(\"userLocation\", u_userLocation);\r",
+									"\r",
+									"var u_loginStatus = [\"Active\", \"InActive\"];\r",
+									"var userLoginStatus = u_loginStatus[Math.floor(Math.random() * u_loginStatus.length)];\r",
+									"pm.environment.set(\"loginStatus\", userLoginStatus);\r",
+									"\r",
+									"var u_password = pm.variables.replaceIn('{{$$randomPassword}}');\r",
+									"pm.environment.set(\"password\", u_password);\r",
+									"\r",
+									"var u_roleIds = [\"R01\", \"R02\",\"R03\"];\r",
+									"var UserRoleIds = u_roleIds[Math.floor(Math.random() * u_roleIds.length)];\r",
+									"pm.environment.set(\"roleIds\", UserRoleIds);\r",
+									"\r",
+									"pm.environment.set(\"status\", userLoginStatus);\r",
+									"\r",
+									"const email = \"{{$randomEmail}}\";\r",
+									"pm.variables.set(\"userLoginEmail\", email);\r",
+									"\r",
+									"var u_middleName = \"ApiScorers\";\r",
+									"pm.environment.set(\"userMiddleName\", u_middleName);\r",
+									"\r",
+									"for (let i = 0; i < 10; i++) {\r",
+									"    let randomMobile = Math.random().toString().slice(2,12);\r",
+									"    pm.variables.set(\"userPhoneNumber\", randomMobile);\r",
+									"}\r",
+									"\r",
+									"pm.environment.set(\"roleId\", UserRoleIds);\r",
+									"\r",
+									"pm.environment.set(\"userRoleStatus\", userLoginStatus);\r",
+									"\r",
+									"var u_TimeZone = [\"PST\", \"MST\", \"CST\", \"EST\", \"IST\"];\r",
+									"var timeZone = u_TimeZone[Math.floor(Math.random() * u_TimeZone.length)];\r",
+									"pm.environment.set(\"userTimeZone\", timeZone);\r",
+									"\r",
+									"const u_userVisaStatus = [\"Not-Specified\", \"NA\", \"GC-EAD\", \"H4-EAD\", \"H4\",\"H1B\", \"Canada-EAD\", \"Indian-Citizen\", \"US-Citizen\", \"Canada-Citizen\"];\r",
+									"var visaStatus = u_userVisaStatus[Math.floor(Math.random() * u_userVisaStatus.length)];\r",
+									"pm.environment.set(\"userVisaStatus\", visaStatus);\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"var response = pm.response.json();",
+									"pm.globals.set(\"user_Id\", response.userId);",
+									"",
+									"var schema = {",
+									"  \"userComments\": \"string\",",
+									"  \"userEduPg\": \"string\",",
+									"  \"userEduUg\": \"string\",",
+									"  \"userFirstName\": \"string\",",
+									"  \"userId\": \"string\",",
+									"  \"userLastName\": \"string\",",
+									"  \"userLinkedinUrl\": \"string\",",
+									"  \"userLocation\": \"string\",",
+									"  \"userLogin\": {",
+									"    \"loginStatus\": \"string\",",
+									"    \"password\": \"string\",",
+									"    \"roleIds\": [",
+									"      \"string\"",
+									"    ],",
+									"    \"status\": \"string\",",
+									"    \"userLoginEmail\": \"string\"",
+									"  },",
+									"  \"userMiddleName\": \"string\",",
+									"  \"userPhoneNumber\": 0,",
+									"  \"userRoleMaps\": [",
+									"    {",
+									"      \"roleId\": \"string\",",
+									"      \"userRoleStatus\": \"string\"",
+									"    }",
+									"  ],",
+									"  \"userTimeZone\": \"string\",",
+									"  \"userVisaStatus\": \"string\"",
+									"};",
+									"pm.test(\"JSON Schema Validation\", () => {",
+									"    pm.expect(tv4.validate(response, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userComments\": \"{{userComments}}\",\r\n    \"userEduPg\": \"{{userEduPg}}\",\r\n    \"userEduUg\": \"{{userEduUg}}\",\r\n    \"userFirstName\": \"ApiScorers_002\",\r\n    \"userLastName\": \"{{userLastName}}\",\r\n    \"userLinkedinUrl\": \"{{userLinkedinUrl}}\",\r\n    \"userLocation\": \"{{userLocation}}\",\r\n    \"userLogin\": {\r\n        \"loginStatus\": \"{{loginStatus}}\",\r\n        \"password\": \"{{password}}\",\r\n        \"roleIds\": [\r\n            \"{{roleIds}}\"\r\n        ],\r\n        \"status\": \"{{status}}\",\r\n        \"userLoginEmail\": \"{{userLoginEmail}}\"\r\n    },\r\n    \"userMiddleName\": \"{{userMiddleName}}\",\r\n    \"userPhoneNumber\": {{userPhoneNumber}},\r\n    \"userRoleMaps\": [\r\n        {\r\n            \"roleId\": \"{{roleId}}\",\r\n            \"userRoleStatus\": \"{{userRoleStatus}}\"\r\n        }\r\n    ],\r\n    \"userTimeZone\": \"{{userTimeZone}}\",\r\n    \"userVisaStatus\": \"{{userVisaStatus}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/roleStatus",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roleStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "endpoint as programID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400 Not Found\", ()=> {\r",
+									"  console.log =pm.expect(pm.response.code).to.equal(400);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/programs/P1681",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"programs",
+								"P1681"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get batch by batchID-Negative",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"invalid batchID\", function () {\r",
+									"  pm.expect(pm.response.json().status).to.eql(400);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/batches/batchId/{{invalidBatchId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches",
+								"batchId",
+								"{{invalidBatchId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get batch by batchName -Negative",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"invalid batchName\", function () {\r",
+									"  pm.expect(pm.response.json().success).to.eql(false);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/batches/batchName/{{invalidBatchName}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches",
+								"batchName",
+								"{{invalidBatchName}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get batch by ProgramID -Negative",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"invalid programID while the batch\", function () {\r",
+									"  pm.expect(pm.response.json().status).to.eql(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/batches/program/{{invalidpgmID}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches",
+								"program",
+								"{{invalidpgmID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All roles(No token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/roles",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Users(no token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Information by ID(invalid ID)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/{{user_Id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"{{user_Id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Active User(invalid token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{invalid token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/activeUsers",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"activeUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by Batch ID(with No Authorization)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/programBatch/{{createdBatchId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"programBatch",
+								"{{createdBatchId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user for Program ID(with non existing program id)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/programs/635689",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"programs",
+								"635689"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Users With Roles(with invalid token))",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{invalid token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/roles",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by RoleID(non existing role id))",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/roles/R04",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roles",
+								"R04"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Users with Filters(No auth token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/v2/users",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"v2",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get users by Status(no token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/byStatus",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"byStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "empty payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"programDescription\": \"null\",\r\n  \"programName\": \"null\",\r\n  \"programStatus\": \"null\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/putprogram/{{programId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"putprogram",
+								"{{programId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update by BatchID -Negative",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var bname = \"SDET\" + pm.variables.replaceIn('{{$randomInt}}');\r",
+									"var bdesc = \"SDET Batch \"+ pm.variables.replaceIn('{{$randomInt}}');\r",
+									"var batchName_Status = [\"Active\", \"InActive\"];\r",
+									"var bstatus = batchName_Status[Math.floor(Math.random() * 2)];\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.environment.set(\"batchDescription\", bdesc)\r",
+									"pm.environment.set(\"batchName\",bname)\r",
+									"pm.environment.set(\"batchNoOfClasses\",Math.floor(Math.random() * 20) + 1)\r",
+									"pm.environment.set(\"batchStatus\",bstatus)\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"batchDescription\": \"{{batchDescription}}\",\r\n  \"batchId\": \"{{createdBatchId}}\",\r\n  \"batchName\": \"{{batchName}}\",\r\n  \"batchNoOfClasses\": \"{{batchNoOfClasses}}\",\r\n  \"batchStatus\": \"{{invalidStatus}}\",\r\n  \"programId\": \"{{programId}}\"\r\n }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/batches/{{invalidBatchId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches",
+								"{{invalidBatchId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User(invalid User ID)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"userId\": 0,\r\n        \"userFirstName\": \"string\",\r\n        \"userLastName\": \"string\",\r\n        \"userPhoneNumber\": 0,\r\n        \"userTimeZone\": \"string\",\r\n         \"userVisaStatus\": \"string\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/{userId}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"{userId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Role Id(same role id in body 2nd time)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userRoleList\": [\r\n        \"R02\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/roleId/{{user_Id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roleId",
+								"{{user_Id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Role Pgm Batch status(Empty request payload)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/roleProgramBatchStatus/{{user_Id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roleProgramBatchStatus",
+								"{{user_Id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Role Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roleId\": \"R03\",\r\n    \"userRoleStatus\": \"Active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/users/roleStatus/{{user_Id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"roleStatus",
+								"{{user_Id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Login Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/userLogin/{userId}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"userLogin",
+								"{userId}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invalid programID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"   pm.test(\"status code verify 401\",function() {\r",
+									"     pm.response.to.have.status(401);\r",
+									" });\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}//deletebyprogid/{{program_id}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"",
+								"deletebyprogid",
+								"{{program_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "invalid endpont",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}//deletebyprogname/{{program_Name}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"",
+								"deletebyprogname",
+								"{{program_Name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the BatchID -Negative",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"trying to delete the invalidID\", function () {\r",
+									"  pm.expect(pm.response.json().status).to.eql(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/batches/{{invalidBatchName}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"batches",
+								"{{invalidBatchName}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User(invaliduserID)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.equal(200);\r",
+									"    });\r",
+									"} else {\r",
+									"    pm.test(\"Status code is not 200\", function () {\r",
+									"        pm.expect(pm.response.code).to.not.equal(200);\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 2000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/users/{{userId}}",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout without authorization token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/logoutlms",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"logoutlms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout with Invalid endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 405\", function () {\r",
+									"    pm.response.to.have.status(405);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseURL}}/logout",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bugs",
+			"item": [
+				{
+					"name": "Program_Bug",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json(); \r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Verify the expected status code is 200\", function () {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"    var jsonData = pm.response.json(); \r",
+									"   \r",
+									"}else if (pm.response.code === 201) {\r",
+									"    pm.test(\"Verify the expected status code is 201\", function () {\r",
+									"        pm.response.to.have.status(201);\r",
+									"    });\r",
+									"    var jsonData = pm.response.json(); \r",
+									" \r",
+									"} else if (pm.response.code === 401) {\r",
+									"    pm.test(\"Validate status code 401\", function () {\r",
+									"        pm.response.to.have.status(401);\r",
+									"    });\r",
+									"    pm.test(\"message: \"+jsonData.message,()=>{\r",
+									"    console.log(\"Message is: \",jsonData.message);\r",
+									"});\r",
+									"} else if (pm.response.code === 400) {\r",
+									"    pm.test(\"Validate status code 400\", function () {\r",
+									"        pm.response.to.have.status(400);\r",
+									"    });\r",
+									"    pm.test(\"message: \"+jsonData.message,()=>{\r",
+									"    console.log(\"Message is: \",jsonData.message);\r",
+									"});\r",
+									"}else if (pm.response.code === 404) {\r",
+									"    pm.test(\"Validate Status code is 404\", function () {\r",
+									"        pm.response.to.have.status(404);\r",
+									"    });\r",
+									"    pm.test(\"message: \"+jsonData.message,()=>{\r",
+									"    console.log(\"Message is: \",jsonData.message);\r",
+									"});\r",
+									"} else {\r",
+									"    pm.test(\"Unexpected status code: \" + pm.response.code, function () {\r",
+									"        pm.expect(pm.response.code).to.be.oneOf([500, 503]); \r",
+									"    });\r",
+									"    pm.test(\"error: \"+jsonData.error,()=>{\r",
+									"    console.log(\"Error is: \",jsonData.error);\r",
+									"});\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"programDescription\": \"ewrew\",\r\n\"programName\": \"BBC\",\r\n\"programStatus\": \"Active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseURL}}/saveprogram",
+							"host": [
+								"{{BaseURL}}"
+							],
+							"path": [
+								"saveprogram"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
